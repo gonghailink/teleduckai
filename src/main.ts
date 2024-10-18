@@ -4,7 +4,6 @@ import '@/queue.ts'
 import 'jsr:@std/dotenv/load'
 
 const TOKEN = Deno.env.get('TELEGRAM_BOT_TOKEN')
-if (!TOKEN) throw new Error('TELEGRAM_BOT_TOKEN is not set')
 
 if (Deno.env.get('TELEGRAM_BOT_MODE') === 'longpolling') {
   bot.start()
