@@ -3,14 +3,22 @@
     "start": "TELEGRAM_BOT_MODE=longpolling deno run --watch --allow-read --allow-write --allow-env --allow-net --allow-import --unstable-kv src/main.ts"
   },
   "imports": {
-    "@grammyjs/auto-chat-action": "https://deno.land/x/grammy_auto_chat_action@v0.1.1/mod.ts",
+    "@/": "./src/",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
     "grammy": "https://deno.land/x/grammy@v1.30.0/mod.ts",
-    "telegramify-markdown": "https://esm.sh/telegramify-markdown@1.2.2"
+    "telegramify-markdown": "https://esm.sh/telegramify-markdown@1.2.2",
+    "@libsql/client": "https://esm.sh/@libsql/client@0.6.0/web"
   },
   "fmt": {
     "indentWidth": 2,
     "singleQuote": true,
     "semiColons": false
+  },
+  "deploy": {
+    "exclude": [
+      "**/node_modules"
+    ],
+    "include": [],
+    "entrypoint": "src/main.ts"
   }
 }

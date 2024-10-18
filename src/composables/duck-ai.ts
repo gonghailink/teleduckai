@@ -1,4 +1,4 @@
-import { useMessages } from './messages.ts'
+import { useDB } from '@/db.ts'
 
 export const models = {
   'GPT-4o mini': 'gpt-4o-mini',
@@ -17,26 +17,18 @@ export const getModelByCode = (value: string) => {
 interface DuckAiOptions {
   model?: DuckModel
   chatId: number
-  kv: Deno.Kv
 }
 
+const db = await useDB()
+
 export const useDuckAi = (options: DuckAiOptions) => {
-  const messages = useMessages({
-    chatId: options.chatId,
-    kv: options.kv,
-  })
+  db?.setChatId(options.chatId)
 
   const STATUS_URL = 'https://duckduckgo.com/duckchat/v1/status'
   const CHAT_URL = 'https://duckduckgo.com/duckchat/v1/chat'
 
-  const getSavedVqd = async (): Promise<string | undefined | null> => {
-    const vqd = await options.kv.get<string>(['vqd', options.chatId])
-
-    return vqd.value
-  }
-
   const getVqd = async (): Promise<string> => {
-    const savedVqd = await getSavedVqd()
+    const savedVqd = await db?.getVqd()
     if (savedVqd) return savedVqd
 
     const status = await fetch(STATUS_URL, {
@@ -54,11 +46,11 @@ export const useDuckAi = (options: DuckAiOptions) => {
   }
 
   const chat = async (content: string) => {
-    const savedMessage = await messages.getAll()
+    const savedMessage = await db?.getMessages() || []
 
     const data = {
       model: options.model ?? 'gpt-4o-mini',
-      messages: savedMessage.concat({
+      messages: savedMessage?.concat({
         role: 'user',
         content,
       }),
@@ -124,18 +116,19 @@ export const useDuckAi = (options: DuckAiOptions) => {
       throw new Error('No result obtained from the AI response stream')
     }
 
-    messages.save([
-      {
-        role: 'user',
-        content,
-      },
-      {
-        role: 'assistant',
-        content: result,
-      },
+    await Promise.all([
+      db?.saveMessages([
+        {
+          role: 'user',
+          content,
+        },
+        {
+          role: 'assistant',
+          content: result,
+        },
+      ]),
+      db?.saveVqd(vqd),
     ])
-
-    options.kv.set(['vqd', options.chatId], vqd)
 
     return {
       message: result,
