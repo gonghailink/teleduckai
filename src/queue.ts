@@ -20,11 +20,10 @@ kv.listenQueue(async (msg: unknown) => {
     model: msg.model,
   })
 
-  const setTyping = () => bot.api.sendChatAction(msg.chatId, 'typing')
-
-  setTyping()
-
-  const typing = setInterval(setTyping, 5_000)
+  const typing = setInterval(
+    () => bot.api.sendChatAction(msg.chatId, 'typing'),
+    5_000,
+  )
 
   try {
     const response = await duck.chat(msg.message)

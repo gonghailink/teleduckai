@@ -83,6 +83,8 @@ bot.on('message:text', async (ctx) => {
   }
 
   await kv.enqueue(message)
+
+  ctx.replyWithChatAction('typing')
 })
 
 export { bot }
