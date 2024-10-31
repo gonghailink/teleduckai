@@ -81,10 +81,10 @@ bot.on('message:text', async (ctx) => {
     model: model,
     message: ctx.message.text,
   }
-
-  await kv.enqueue(message)
-
+  
   ctx.replyWithChatAction('typing')
+  
+  await kv.enqueue(message)
 })
 
 export { bot }
