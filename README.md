@@ -9,6 +9,11 @@ TeleDuckAI is a Telegram bot powered by Duck.ai, built using Deno. This project 
 - Fast and intelligent responses via Telegram chat
 - Supports webhook mode
 
+## Demo
+
+You can check out the demo at [@perabot](https://t.me/Perabot) on Telegram.
+
+
 ## Requirements
 
 - Latest version of [Deno](https://deno.land/)
